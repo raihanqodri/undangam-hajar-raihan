@@ -118,8 +118,9 @@
   /* ================= PINTU KEBUN (transisi pembuka) ================= */
   #gate{
     position:fixed; inset:0; z-index:25; max-width:480px; margin:0 auto;
-    display:flex; perspective:1400px; pointer-events:none;
+    display:none; perspective:1400px; pointer-events:none;
   }
+  #gate.show{display:flex;}
   .gate-panel{
     position:relative; width:50%; height:100%;
     background:
@@ -423,8 +424,9 @@
   document.getElementById('openBtn').addEventListener('click', function(){
     document.getElementById('cover').classList.add('opened');
     const gate = document.getElementById('gate');
-    gate.classList.add('open'); // pintu membuka ke luar
-    setTimeout(()=> gate.classList.add('hide'), 1600); // sembunyikan setelah animasi selesai
+    gate.classList.add('show'); // tampilkan pintu tertutup dulu
+    requestAnimationFrame(()=> requestAnimationFrame(()=> gate.classList.add('open'))); // lalu mulai animasi membuka
+    setTimeout(()=> gate.classList.remove('show','open'), 1700); // sembunyikan total setelah animasi selesai
 
     document.getElementById('waFab').classList.add('show');
     musicBtn.classList.add('show');
