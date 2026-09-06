@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Undangan Pernikahan — [Nama Pria] & [Nama Wanita]</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap');
+
+  :root{
+    --ink:#4a3b3d;
+    --ink-soft:#8a7274;
+    --paper:#fbf4ef;
+    --paper-deep:#f3e4dd;
+    --sage:#93a17c;
+    --sage-deep:#5c6b48;
+    --rose:#c98a93;
+    --rose-deep:#a8646f;
+    --gold:#c9a15a;
+    --line: rgba(168,100,111,0.22);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper-deep);
+    color:var(--ink);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{max-width:480px; margin:0 auto; background:var(--paper); position:relative; overflow:hidden; min-height:100vh;}
+
+  h1,h2,h3,.serif{font-family:'Cormorant Garamond', serif; font-weight:500; color:var(--rose-deep);}
+
+  /* ---------- COVER / GERBANG ---------- */
+  #cover{
+    height:100vh; min-height:640px;
+    display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+    text-align:center; padding:48px 28px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(168,135,79,0.10), transparent 55%),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+    position:fixed; inset:0; max-width:480px; margin:0 auto; z-index:20;
+    transition:transform 0.9s cubic-bezier(.6,0,.2,1), opacity 0.9s ease;
+  }
+  #cover.opened{ transform:translateY(-100%); opacity:0; pointer-events:none; }
+  .kicker{font-size:13px; letter-spacing:2px; color:var(--ink-soft);}
+  .couple-mini{font-size:44px; line-height:1.15; margin:18px 0;}
+  .to-line{font-size:14px; color:var(--ink-soft);}
+  .guest-name{font-size:22px; margin-top:6px; border-bottom:1px solid var(--line); display:inline-block; padding-bottom:6px; min-width:160px;}
+  #openBtn{
+    margin-top:10px; border:1px solid var(--sage-deep); background:transparent; color:var(--sage-deep);
+    padding:14px 34px; border-radius:999px; font-family:'Jost',sans-serif; font-size:13px; letter-spacing:1.5px;
+    cursor:pointer; transition:background .3s, color .3s;
+  }
+  #openBtn:hover{background:var(--sage-deep); color:var(--paper);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:64px 30px; position:relative;}
+  .center{text-align:center;}
+  .eyebrow{font-size:12px; letter-spacing:2.5px; color:var(--gold); margin-bottom:10px;}
+  .quote-block{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; line-height:1.7; color:var(--ink-soft); max-width:360px; margin:0 auto;}
+  .divider{width:40px; height:1px; background:var(--line); margin:28px auto;}
+
+  #hero-couple{background:var(--sage-deep); color:var(--paper);}
+  #hero-couple h1{color:var(--paper); font-size:38px;}
+  #hero-couple .quote-block{color:rgba(247,245,238,0.75);}
+  #hero-couple .divider{background:rgba(247,245,238,0.3);}
+
+  .person{margin:26px 0;}
+  .person h3{font-size:30px;}
+  .person p{font-size:14px; color:var(--ink-soft); margin-top:6px; line-height:1.6;}
+  .amp{font-size:26px; color:var(--gold); margin:14px 0;}
+
+  #countdown{background:var(--paper-deep);}
+  .cd-grid{display:flex; justify-content:center; gap:14px; margin:24px 0;}
+  .cd-item{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:14px 10px; min-width:64px;}
+  .cd-num{font-family:'Cormorant Garamond',serif; font-size:28px; color:var(--sage-deep); font-weight:600;}
+  .cd-label{font-size:10px; letter-spacing:1px; color:var(--ink-soft); margin-top:4px;}
+
+  .event-card{border:1px solid var(--line); border-radius:14px; padding:26px 20px; margin:18px 0; background:var(--paper);}
+  .event-card h3{font-size:24px;}
+  .event-card .meta{font-size:14px; color:var(--ink-soft); margin:10px 0 4px;}
+  .maps-btn{display:inline-block; margin-top:14px; font-size:12px; letter-spacing:1px; color:var(--sage-deep); border:1px solid var(--sage-deep); border-radius:999px; padding:9px 20px; text-decoration:none;}
+
+  .story-item{display:flex; gap:16px; text-align:left; margin-bottom:26px;}
+  .story-dot{width:10px; height:10px; border-radius:50%; background:var(--gold); margin-top:6px; flex-shrink:0;}
+  .story-item h4{font-size:20px; margin-bottom:6px;}
+  .story-item p{font-size:14px; color:var(--ink-soft); line-height:1.6;}
+
+  .gift-box{border:1px dashed var(--line); border-radius:14px; padding:20px; text-align:left; margin-top:20px;}
+  .gift-box .bank{font-size:12px; color:var(--ink-soft); letter-spacing:1px;}
+  .gift-box .num{font-family:'Cormorant Garamond',serif; font-size:22px; margin:4px 0;}
+  .copy-btn{font-size:11px; border:none; background:var(--sage); color:var(--paper); padding:6px 14px; border-radius:999px; cursor:pointer;}
+
+  #rsvp textarea, #rsvp input{width:100%; border:1px solid var(--line); background:var(--paper); border-radius:10px; padding:12px 14px; font-family:'Jost',sans-serif; font-size:14px; margin-bottom:12px;}
+  #rsvp .submit-btn{width:100%; border:none; background:var(--sage-deep); color:var(--paper); padding:14px; border-radius:999px; font-size:13px; letter-spacing:1.5px; cursor:pointer;}
+
+  footer{background:var(--sage-deep); color:rgba(247,245,238,0.7); text-align:center; padding:40px 24px; font-size:12px;}
+  footer .couple-foot{font-family:'Cormorant Garamond',serif; color:var(--paper); font-size:26px; margin:10px 0;}
+
+  /* Floating WA button — muncul setelah undangan dibuka */
+  #waFab{
+    position:fixed; right:20px; bottom:20px; z-index:30;
+    width:56px; height:56px; border-radius:50%; background:#25D366; color:#fff;
+    display:flex; align-items:center; justify-content:center; text-decoration:none;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25); opacity:0; transform:scale(0.6); pointer-events:none;
+    transition:opacity .4s, transform .4s;
+  }
+  #waFab.show{opacity:1; transform:scale(1); pointer-events:auto;}
+  #waFab svg{width:26px; height:26px; fill:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    #cover{transition:none;}
+  }
+
+  /* ================= PINTU KEBUN (transisi pembuka) ================= */
+  #gate{
+    position:fixed; inset:0; z-index:25; max-width:480px; margin:0 auto;
+    display:flex; perspective:1400px; pointer-events:none;
+  }
+  .gate-panel{
+    position:relative; width:50%; height:100%;
+    background:
+      linear-gradient(180deg, #fffaf6 0%, var(--paper) 55%, var(--paper-deep) 100%);
+    box-shadow: inset 0 0 0 10px #fff, inset 0 0 0 13px var(--gold);
+    transition: transform 1.5s cubic-bezier(.76,-0.02,.24,1);
+    transform-style:preserve-3d;
+  }
+  .gate-panel::before{ /* garis kaca jendela */
+    content:''; position:absolute; inset:26px; border:1px solid var(--line);
+    background:
+      repeating-linear-gradient(0deg, transparent 0 19.5%, var(--line) 19.5% 20%),
+      repeating-linear-gradient(90deg, transparent 0 32%, var(--line) 32% 33%);
+  }
+  .gate-panel::after{ /* rangkaian bunga di sudut */
+    content:'🌸🌷🌹'; position:absolute; top:-6px; font-size:20px; letter-spacing:-4px; filter:saturate(1.1);
+  }
+  .gate-panel.left{transform-origin:left center; border-right:2px solid var(--gold);}
+  .gate-panel.left::after{left:6px;}
+  .gate-panel.right{transform-origin:right center;}
+  .gate-panel.right::after{right:6px; transform:scaleX(-1);}
+  #gate.open .gate-panel.left{transform:rotateY(-108deg);}
+  #gate.open .gate-panel.right{transform:rotateY(108deg);}
+  #gate.hide{display:none;}
+
+  /* ================= HERO bertema taman ================= */
+  #hero-couple{
+    background:
+      linear-gradient(180deg, #eef2e2 0%, #f7efe4 45%, var(--paper) 100%) !important;
+    color:var(--ink) !important; overflow:hidden;
+  }
+  #hero-couple h1{color:var(--rose-deep) !important;}
+  #hero-couple .quote-block{color:var(--ink-soft) !important;}
+  #hero-couple .divider{background:var(--line) !important;}
+  .garden-scene{position:relative; height:150px; margin:-64px -30px 18px; overflow:hidden;}
+  .garden-scene .hill{position:absolute; bottom:0; left:0; right:0; height:70%; background:var(--sage); opacity:.35; border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+  .garden-scene .path{position:absolute; bottom:0; left:44%; width:12%; height:100%; background:linear-gradient(180deg, rgba(251,244,239,0) 0%, #fbf4ef 90%); clip-path:polygon(35% 0,65% 0,100% 100%,0% 100%);}
+  .garden-scene .bush{position:absolute; bottom:0; width:70px; height:44px; background:var(--sage-deep); opacity:.55; border-radius:50% 50% 10% 10%;}
+  .garden-scene .butterfly{position:absolute; top:30%; font-size:18px; animation:flutter 7s ease-in-out infinite;}
+  @keyframes flutter{
+    0%{transform:translateX(0) translateY(0) rotate(0deg);}
+    25%{transform:translateX(40px) translateY(-14px) rotate(8deg);}
+    50%{transform:translateX(90px) translateY(4px) rotate(-6deg);}
+    75%{transform:translateX(140px) translateY(-10px) rotate(6deg);}
+    100%{transform:translateX(180px) translateY(0) rotate(0deg); opacity:0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .gate-panel{transition:none;}
+    .garden-scene .butterfly{animation:none;}
+  }
+
+  /* ---------- ANIMASI: reveal saat scroll ---------- */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+  .reveal-delay-1.in-view{transition-delay:.12s;}
+  .reveal-delay-2.in-view{transition-delay:.24s;}
+  .reveal-delay-3.in-view{transition-delay:.36s;}
+
+  /* ---------- ANIMASI: cover masuk pertama kali ---------- */
+  #cover .kicker{animation:fadeDown 1s ease both; animation-delay:.1s;}
+  #cover .couple-mini{animation:fadeDown 1s ease both; animation-delay:.35s;}
+  #cover .to-line, #cover .guest-name{animation:fadeUp 1s ease both; animation-delay:.6s;}
+  #openBtn{animation:fadeUp 1s ease both, pulseRing 2.6s ease-in-out .3s infinite; animation-delay:.85s, 1.6s;}
+  @keyframes fadeDown{from{opacity:0; transform:translateY(-16px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes pulseRing{
+    0%,100%{box-shadow:0 0 0 0 rgba(63,79,58,0.0);}
+    50%{box-shadow:0 0 0 8px rgba(63,79,58,0.08);}
+  }
+
+  /* ---------- ANIMASI: dekorasi bunga/kelopak melayang ---------- */
+  .petal{
+    position:fixed; top:-40px; z-index:15; pointer-events:none;
+    width:14px; height:14px; opacity:.55;
+    background:radial-gradient(circle at 30% 30%, var(--gold), var(--sage) 75%);
+    border-radius:70% 0 70% 0;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    0%{transform:translateY(-5vh) translateX(0) rotate(0deg); opacity:0;}
+    10%{opacity:.55;}
+    100%{transform:translateY(105vh) translateX(var(--drift,20px)) rotate(300deg); opacity:0;}
+  }
+
+  /* ---------- ANIMASI: hitung mundur berdetak ---------- */
+  .cd-item{transition:transform .15s ease;}
+  .cd-item.tick{transform:translateY(-4px) scale(1.04);}
+
+  /* ---------- ANIMASI: garis pembatas melebar ---------- */
+  .divider{width:0; transition:width 1s ease .2s;}
+  .reveal.in-view .divider{width:40px;}
+
+  /* ---------- ANIMASI: tombol musik ---------- */
+  #musicToggle{
+    position:fixed; left:20px; bottom:20px; z-index:30;
+    width:48px; height:48px; border-radius:50%; border:1px solid var(--line);
+    background:var(--paper); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; opacity:0; transform:scale(.6); pointer-events:none; transition:opacity .4s, transform .4s;
+    animation:spin 6s linear infinite; animation-play-state:paused;
+  }
+  #musicToggle.show{opacity:1; transform:scale(1); pointer-events:auto;}
+  #musicToggle.playing{animation-play-state:running;}
+  #musicToggle svg{width:20px; height:20px; fill:var(--sage-deep);}
+  @keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+    #cover *{animation:none !important;}
+    .petal{display:none;}
+    #musicToggle{animation:none;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= COVER ================= -->
+  <div id="cover">
+    <div>
+      <p class="kicker">The Wedding Of</p>
+      <h1 class="couple-mini">[Nama Pria]<br>&amp;<br>[Nama Wanita]</h1>
+    </div>
+    <div>
+      <p class="to-line">Kepada Bapak/Ibu/Saudara/i</p>
+      <p class="guest-name" id="guestNameCover">Tamu Undangan</p>
+    </div>
+    <button id="openBtn">Buka Undangan</button>
+  </div>
+
+  <!-- ================= PINTU KEBUN (transisi) ================= -->
+  <div id="gate">
+    <div class="gate-panel left"></div>
+    <div class="gate-panel right"></div>
+  </div>
+
+  <!-- ================= HERO / QUOTE ================= -->
+  <section id="hero-couple" class="center reveal">
+    <div class="garden-scene">
+      <div class="hill"></div>
+      <div class="bush" style="left:6%;"></div>
+      <div class="bush" style="left:74%; width:56px; height:34px;"></div>
+      <div class="path"></div>
+      <div class="butterfly" style="left:10%;">🦋</div>
+      <div class="butterfly" style="left:0; top:55%; animation-delay:2.5s;">🦋</div>
+    </div>
+    <p class="eyebrow">Save The Date</p>
+    <h1>[Nama Pria] &amp; [Nama Wanita]</h1>
+    <p class="serif" style="font-size:22px; margin-top:6px;">[DD . MM . YYYY]</p>
+    <div class="divider"></div>
+    <p class="quote-block">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya." — QS. Ar-Rum: 21</p>
+  </section>
+
+  <!-- ================= MEMPELAI ================= -->
+  <section id="couple" class="center">
+    <p class="eyebrow reveal">Bride &amp; Groom</p>
+    <p class="reveal" style="font-size:14px; color:var(--ink-soft); max-width:320px; margin:0 auto 10px;">Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.</p>
+
+    <div class="person reveal reveal-delay-1">
+      <h3>[Nama Lengkap Pria]</h3>
+      <p>Putra [ke- ] dari Bapak [Nama Ayah]<br>&amp; Ibu [Nama Ibu]</p>
+    </div>
+    <div class="amp reveal">&amp;</div>
+    <div class="person reveal reveal-delay-1">
+      <h3>[Nama Lengkap Wanita]</h3>
+      <p>Putri [ke- ] dari Bapak [Nama Ayah]<br>&amp; Ibu [Nama Ibu]</p>
+    </div>
+  </section>
+
+  <!-- ================= COUNTDOWN ================= -->
+  <section id="countdown" class="center reveal">
+    <p class="eyebrow">Menuju Hari Bahagia</p>
+    <div class="cd-grid">
+      <div class="cd-item"><div class="cd-num" id="cd-days">00</div><div class="cd-label">HARI</div></div>
+      <div class="cd-item"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">JAM</div></div>
+      <div class="cd-item"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">MENIT</div></div>
+      <div class="cd-item"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">DETIK</div></div>
+    </div>
+    <p style="font-size:13px; color:var(--ink-soft);">Kami bersyukur dipertemukan di waktu terbaik, kini kami menanti hari istimewa ini.</p>
+  </section>
+
+  <!-- ================= ACARA ================= -->
+  <section id="acara" class="center">
+    <p class="eyebrow reveal">Waktu &amp; Tempat</p>
+
+    <div class="event-card reveal">
+      <h3>Akad Nikah</h3>
+      <p class="meta">[Hari, Tanggal Lengkap]</p>
+      <p class="meta">Pukul [00.00] WIB</p>
+      <p class="meta"><strong>[Nama Gedung / Kediaman]</strong><br>[Alamat lengkap lokasi]</p>
+      <a class="maps-btn" href="[LINK_GOOGLE_MAPS_AKAD]" target="_blank" rel="noopener">Lihat Lokasi</a>
+    </div>
+
+    <div class="event-card reveal reveal-delay-1">
+      <h3>Resepsi</h3>
+      <p class="meta">[Hari, Tanggal Lengkap]</p>
+      <p class="meta">Pukul [00.00] – Selesai</p>
+      <p class="meta"><strong>[Nama Gedung / Kediaman]</strong><br>[Alamat lengkap lokasi]</p>
+      <a class="maps-btn" href="[LINK_GOOGLE_MAPS_RESEPSI]" target="_blank" rel="noopener">Lihat Lokasi</a>
+    </div>
+  </section>
+
+  <!-- ================= LOVE STORY ================= -->
+  <section id="story">
+    <p class="eyebrow center reveal">Love Story</p>
+    <div style="margin-top:24px;">
+      <div class="story-item reveal">
+        <div class="story-dot"></div>
+        <div><h4>Awal Cerita</h4><p>[Ceritakan bagaimana kalian pertama bertemu.]</p></div>
+      </div>
+      <div class="story-item reveal reveal-delay-1">
+        <div class="story-dot"></div>
+        <div><h4>Lamaran</h4><p>[Ceritakan momen lamaran / restu keluarga.]</p></div>
+      </div>
+      <div class="story-item reveal reveal-delay-2">
+        <div class="story-dot"></div>
+        <div><h4>Pernikahan</h4><p>[Harapan kalian di hari pernikahan.]</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AMPLOP DIGITAL ================= -->
+  <section id="gift" class="center reveal">
+    <p class="eyebrow">Amplop Digital</p>
+    <p style="font-size:13px; color:var(--ink-soft); max-width:320px; margin:0 auto;">Doa restu Anda adalah karunia yang paling berarti. Jika ingin memberi tanda kasih, dapat dikirim secara cashless melalui:</p>
+    <div class="gift-box">
+      <p class="bank">BANK [NAMA BANK]</p>
+      <p class="num">[0000-0000-0000]</p>
+      <p style="font-size:13px; margin-bottom:10px;">a.n. [Nama Pemilik Rekening]</p>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('[0000-0000-0000]')">Salin Nomor</button>
+    </div>
+  </section>
+
+  <!-- ================= RSVP ================= -->
+  <section id="rsvp" class="center reveal">
+    <p class="eyebrow">Ucapan &amp; Konfirmasi Kehadiran</p>
+    <input type="text" id="rsvpName" placeholder="Nama Anda">
+    <textarea id="rsvpMsg" rows="3" placeholder="Tulis ucapan & doa..."></textarea>
+    <button class="submit-btn" id="rsvpSend">Kirim via WhatsApp</button>
+    <p style="font-size:11px; color:var(--ink-soft); margin-top:10px;">*Tombol ini akan membuka WhatsApp dan mengisi ucapanmu secara otomatis ke nomor tuan rumah.</p>
+  </section>
+
+  <!-- Tombol musik latar -->
+  <button id="musicToggle" aria-label="Putar musik">
+    <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg>
+  </button>
+  <audio id="bgMusic" loop preload="none">
+    <source src="[LINK_FILE_MUSIK.mp3]" type="audio/mpeg">
+  </audio>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <p>Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
+    <p class="couple-foot">[Nama Pria] &amp; [Nama Wanita]</p>
+    <p>Dibuat dengan ❤ — [Nama Kamu / Brand]</p>
+  </footer>
+
+  <!-- Floating share button -->
+  <a href="#" id="waFab" target="_blank" rel="noopener" aria-label="Bagikan ke WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.22 8.22 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.26-8.24a8.2 8.2 0 0 1 5.83 2.42 8.18 8.18 0 0 1 2.41 5.83c0 4.55-3.7 8.24-8.25 8.24zm4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.24-.64.8-.78.97-.15.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.24-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42-.14-.01-.3-.01-.47-.01a.9.9 0 0 0-.65.3c-.22.24-.85.83-.85 2.03 0 1.2.87 2.35 1 2.51.12.16 1.71 2.6 4.14 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.28z"/></svg>
+  </a>
+
+</div>
+
+<script>
+  // ---------- Personalisasi nama tamu dari URL: ?to=Nama%20Tamu ----------
+  const params = new URLSearchParams(window.location.search);
+  const guest = params.get('to');
+  if(guest){
+    document.getElementById('guestNameCover').textContent = decodeURIComponent(guest);
+  }
+
+  // ---------- Dekorasi kelopak melayang ----------
+  const petalLayer = document.createElement('div');
+  document.body.appendChild(petalLayer);
+  for(let i=0;i<14;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.setProperty('--drift', (Math.random()*60-30)+'px');
+    p.style.animationDuration = (9 + Math.random()*8) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    petalLayer.appendChild(p);
+  }
+
+  // ---------- Reveal saat scroll ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.2});
+  revealEls.forEach(el => io.observe(el));
+
+  // ---------- Buka undangan + tampilkan tombol musik & WA + putar musik ----------
+  const bgMusic = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicToggle');
+  document.getElementById('openBtn').addEventListener('click', function(){
+    document.getElementById('cover').classList.add('opened');
+    const gate = document.getElementById('gate');
+    gate.classList.add('open'); // pintu membuka ke luar
+    setTimeout(()=> gate.classList.add('hide'), 1600); // sembunyikan setelah animasi selesai
+
+    document.getElementById('waFab').classList.add('show');
+    musicBtn.classList.add('show');
+    bgMusic.play().then(()=> musicBtn.classList.add('playing')).catch(()=>{ /* autoplay diblokir browser, user tinggal klik tombol */ });
+  });
+  musicBtn.addEventListener('click', function(){
+    if(bgMusic.paused){ bgMusic.play(); musicBtn.classList.add('playing'); }
+    else { bgMusic.pause(); musicBtn.classList.remove('playing'); }
+  });
+
+  // ---------- Countdown ----------
+  // Ganti tanggal di bawah sesuai acara: format 'YYYY-MM-DDTHH:mm:ss'
+  const eventDate = new Date('2026-12-28T08:00:00+07:00').getTime();
+  function updateCountdown(){
+    const now = Date.now();
+    const diff = eventDate - now;
+    if(diff <= 0){
+      ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => document.getElementById(id).textContent = '00');
+      return;
+    }
+    const d = Math.floor(diff/(1000*60*60*24));
+    const h = Math.floor((diff/(1000*60*60))%24);
+    const m = Math.floor((diff/(1000*60))%60);
+    const s = Math.floor((diff/1000)%60);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+
+    // animasi "berdetak" tiap pergantian detik
+    document.querySelectorAll('.cd-item').forEach(item=>{
+      item.classList.add('tick');
+      setTimeout(()=> item.classList.remove('tick'), 150);
+    });
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ---------- WA FAB: share link undangan ini ----------
+  const pageUrl = window.location.href;
+  const shareText = `Assalamu'alaikum, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di pernikahan kami. Berikut undangan digitalnya: ${pageUrl}`;
+  document.getElementById('waFab').href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+
+  // ---------- RSVP -> kirim otomatis ke WA tuan rumah ----------
+  const HOST_WHATSAPP_NUMBER = '62812xxxxxxx'; // GANTI dengan nomor WA tuan rumah, format 62xxxxxxxxxx tanpa tanda + atau 0 di depan
+  document.getElementById('rsvpSend').addEventListener('click', function(){
+    const name = document.getElementById('rsvpName').value.trim() || 'Tamu';
+    const msg = document.getElementById('rsvpMsg').value.trim() || 'InsyaAllah hadir dan mendoakan yang terbaik.';
+    const text = `Assalamu'alaikum, saya ${name}.\nUcapan: ${msg}`;
+    window.open(`https://wa.me/${HOST_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
+  });
+</script>
+</body>
+</html>
